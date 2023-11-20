@@ -1,0 +1,19 @@
+{
+  "name": "reelo-assignment",
+  "version": "1.0.0",
+  "description": "Question Paper Generator Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anurag-int/Reelo_Assignment.git"
+  },
+  "author": "Anurag Gupta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anurag-int/Reelo_Assignment/issues"
+  },
+  "homepage": "https://github.com/anurag-int/Reelo_Assignment#readme"
+}
