@@ -69,21 +69,40 @@ exports.createQuestion = async(req, res) => {
     }
 }
 
-
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
 exports.generateQuestionPaper = async(req, res) => {
     try {
-        // Fetch 10 easy questions
-        const easyQuestions = await Question.find({ difficulty: 'easy' }).limit(10).select('-_id -__v');
+        const totalMarks = 100;
+        const distribution = { easy: 0.2, medium: 0.5, hard: 0.3 }; 
 
-        // Fetch 10 medium questions
-        const mediumQuestions = await Question.find({ difficulty: 'medium' }).limit(10).select('-_id -__v');
+        // Calculate the marks for each difficulty level
+        const easyMarks = totalMarks * distribution.easy;
+        const mediumMarks = totalMarks * distribution.medium;
+        const hardMarks = totalMarks * distribution.hard;
 
-        // Fetch 3 hard questions
-        const hardQuestions = await Question.find({ difficulty: 'hard' }).limit(3).select('-_id -__v');
+        // Fetch questions for each difficulty level
+        let easyQuestions = await Question.find({ difficulty: 'easy' }).select('-_id -__v');
+        let mediumQuestions = await Question.find({ difficulty: 'medium' }).select('-_id -__v');
+        let hardQuestions = await Question.find({ difficulty: 'hard' }).select('-_id -__v');
 
-        // Combine all questions
-        const questionPaper = [...easyQuestions, ...mediumQuestions, ...hardQuestions];
+        // Shuffle the questions within each difficulty level
+        shuffleArray(easyQuestions);
+        shuffleArray(mediumQuestions);
+        shuffleArray(hardQuestions);
+
+        // Select questions for each difficulty level until the required marks are reached
+        const selectedEasyQuestions = selectQuestions(easyQuestions, easyMarks);
+        const selectedMediumQuestions = selectQuestions(mediumQuestions, mediumMarks);
+        const selectedHardQuestions = selectQuestions(hardQuestions, hardMarks);
+
+        // Combine all selected questions
+        const questionPaper = [...selectedEasyQuestions, ...selectedMediumQuestions, ...selectedHardQuestions];
 
         return res.status(200).json({
             success: true,
@@ -98,6 +117,21 @@ exports.generateQuestionPaper = async(req, res) => {
     }
 }
 
+function selectQuestions(questions, requiredMarks) {
+    let selectedQuestions = [];
+    let totalMarks = 0;
+
+    for (let question of questions) {
+        if (totalMarks + question.marks > requiredMarks) {
+            break;
+        }
+
+        selectedQuestions.push(question);
+        totalMarks += question.marks;
+    }
+
+    return selectedQuestions;
+}
 
 
 exports.getAllQuestions = async(req, res) => {
