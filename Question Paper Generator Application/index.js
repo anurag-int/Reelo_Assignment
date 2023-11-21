@@ -3,20 +3,23 @@ const app = express();
 const dotenv = require("dotenv");
 require("dotenv").config();
 
+app.use(express.json());
 const database = require("./config/database");
 database.connect();
 const PORT = process.env.PORT || 5050;
-const questionPaperRoute = require("./routes/Question");
+const question_route = require("./routes/Question");
+
+
 app.get("/", (req, res)=> {
     return res.json({
         success : true,
-        message : "Your Server is up and running..."
+        message : "Welcome to home Page"
     })
 })
 
 
 
-app.use("/api/v1/question-paper", questionPaperRoute);
+app.use("/api/v1/questions", question_route);
 
 app.listen(PORT, ()=> {
     console.log(`App is running at ${PORT}`);

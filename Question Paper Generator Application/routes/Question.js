@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-router.post("/create-question-paper");
-router.get("/total-no-of-question");
-router.get("/generate-question-paper");
+
+const {createQuestion, generateQuestionPaper, getTotalQuestions} = require("../controllers/Question")
 
 
-module.exports = router
+
+router.post("/add-question", createQuestion);
+router.get("/questions-all", getTotalQuestions);
+router.get("/generate-question-paper", generateQuestionPaper);
+
+
+module.exports = router;
