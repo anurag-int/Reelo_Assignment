@@ -77,6 +77,34 @@ exports.generateQuestionPaper = async(req, res) => {
 
 
 
-exports.getTotalQuestions = async(req, res) => {
+exports.getAllQuestions = async(req, res) => {
+    try{
+        const allQuestions = await Question.find({});
+        let objLength = Object.keys(allQuestions).length;
 
+        if(!allQuestions || objLength == 0){
+            return res.status(200).json({
+                success : true,
+                "Total Questions" : 0,
+                "message" : "Questions Not Available"
+            })
+        }
+        else{
+            return res.status(200).json({
+                success : true,
+                "Total Questions Available" : objLength,
+                "message" : "Here are the available questions",
+                data : allQuestions
+
+            })
+        }
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({
+            "success" : "false",
+            "message" : "Internal Server Error"
+
+        })
+    }
 }
