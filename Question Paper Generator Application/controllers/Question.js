@@ -72,14 +72,44 @@ exports.createQuestion = async(req, res) => {
 
 
 exports.generateQuestionPaper = async(req, res) => {
+    try {
+        // Fetch 10 easy questions
+        const easyQuestions = await Question.find({ difficulty: 'easy' }).limit(10).select('-_id -__v');
 
+        // Fetch 10 medium questions
+        const mediumQuestions = await Question.find({ difficulty: 'medium' }).limit(10).select('-_id -__v');
+
+        // Fetch 3 hard questions
+        const hardQuestions = await Question.find({ difficulty: 'hard' }).limit(3).select('-_id -__v');
+
+        // Combine all questions
+        const questionPaper = [...easyQuestions, ...mediumQuestions, ...hardQuestions];
+
+        return res.status(200).json({
+            success: true,
+            questionPaper
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
 }
 
 
 
 exports.getAllQuestions = async(req, res) => {
     try{
-        const allQuestions = await Question.find({});
+        const allQuestions = await Question.find({},{
+            subject : true,
+            difficulty : true,
+            question : true,
+            topic : true,
+            marks : true,
+            _id : false,
+        });
         let objLength = Object.keys(allQuestions).length;
 
         if(!allQuestions || objLength == 0){
