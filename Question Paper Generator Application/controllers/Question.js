@@ -76,6 +76,22 @@ function shuffleArray(array) {
     }
 }
 
+function selectQuestions(questions, requiredMarks) {
+    let selectedQuestions = [];
+    let totalMarks = 0;
+
+    for (let question of questions) {
+        if (totalMarks + question.marks > requiredMarks) {
+            break;
+        }
+
+        selectedQuestions.push(question);
+        totalMarks += question.marks;
+    }
+
+    return selectedQuestions;
+}
+
 exports.generateQuestionPaper = async(req, res) => {
     try {
         const totalMarks = 100;
@@ -106,6 +122,11 @@ exports.generateQuestionPaper = async(req, res) => {
 
         return res.status(200).json({
             success: true,
+            "Total Questions" : "23 Questions(Total),  10-->easy, 10-->medium, 3-->hard",
+            "Total Marks" : "100 Marks",
+            "Easy" : "2 x 10 = 20 Marks",
+            "Medium" : "5 x 10 = 50 Marks",
+            "Hard" : "3 x 10 = 30 Marks",
             questionPaper
         });
     } catch (error) {
@@ -117,21 +138,7 @@ exports.generateQuestionPaper = async(req, res) => {
     }
 }
 
-function selectQuestions(questions, requiredMarks) {
-    let selectedQuestions = [];
-    let totalMarks = 0;
 
-    for (let question of questions) {
-        if (totalMarks + question.marks > requiredMarks) {
-            break;
-        }
-
-        selectedQuestions.push(question);
-        totalMarks += question.marks;
-    }
-
-    return selectedQuestions;
-}
 
 
 exports.getAllQuestions = async(req, res) => {

@@ -13,7 +13,7 @@ const question_route = require("./routes/Question");
 app.get("/", (req, res)=> {
     return res.json({
         success : true,
-        message : "Welcome to home Page"
+        message : "Welcome to Question Paper Generator App"
     })
 })
 
