@@ -8,7 +8,7 @@ const {createQuestion, generateQuestionPaper, getAllQuestions} = require("../con
 
 router.post("/add-question", createQuestion);
 router.get("/questions-all", getAllQuestions);
-router.get("/generate-question-paper", generateQuestionPaper);
+router.post("/generate-question-paper", generateQuestionPaper);
 
 
 module.exports = router;

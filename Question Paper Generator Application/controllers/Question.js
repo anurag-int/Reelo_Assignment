@@ -1,5 +1,8 @@
-
 const Question = require("../models/Question");
+const express = require("express");
+const app = express();
+
+app.use(express.json());
 
 // add question to your database 
 exports.createQuestion = async(req, res) => {
@@ -92,15 +95,33 @@ function selectQuestions(questions, requiredMarks) {
     return selectedQuestions;
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function selectQuestions(questions, count) {
+    return questions.slice(0, count);
+}
+
 exports.generateQuestionPaper = async(req, res) => {
     try {
-        const totalMarks = 100;
-        const distribution = { easy: 0.2, medium: 0.5, hard: 0.3 }; 
+        let totalMarks = req.body.marks;
+        let easyPercent = req.body.easy / 100;
+        let mediumPercent = req.body.medium / 100;
+        let hardPercent = req.body.hard / 100;
 
-        // Calculate the marks for each difficulty level
-        const easyMarks = totalMarks * distribution.easy;
-        const mediumMarks = totalMarks * distribution.medium;
-        const hardMarks = totalMarks * distribution.hard;
+        // Define the marks for each question of each difficulty level
+        const easyQuestionMarks = 2;
+        const mediumQuestionMarks = 5;
+        const hardQuestionMarks = 10;
+
+        // Calculate the number of questions for each difficulty level
+        const easyQuestionsCount = Math.floor((totalMarks * easyPercent) / easyQuestionMarks);
+        const mediumQuestionsCount = Math.floor((totalMarks * mediumPercent) / mediumQuestionMarks);
+        const hardQuestionsCount = Math.floor((totalMarks * hardPercent) / hardQuestionMarks);
 
         // Fetch questions for each difficulty level
         let easyQuestions = await Question.find({ difficulty: 'easy' }).select('-_id -__v');
@@ -112,21 +133,23 @@ exports.generateQuestionPaper = async(req, res) => {
         shuffleArray(mediumQuestions);
         shuffleArray(hardQuestions);
 
-        // Select questions for each difficulty level until the required marks are reached
-        const selectedEasyQuestions = selectQuestions(easyQuestions, easyMarks);
-        const selectedMediumQuestions = selectQuestions(mediumQuestions, mediumMarks);
-        const selectedHardQuestions = selectQuestions(hardQuestions, hardMarks);
+        // Select questions for each difficulty level
+        const selectedEasyQuestions = selectQuestions(easyQuestions, easyQuestionsCount);
+        const selectedMediumQuestions = selectQuestions(mediumQuestions, mediumQuestionsCount);
+        const selectedHardQuestions = selectQuestions(hardQuestions, hardQuestionsCount);
 
         // Combine all selected questions
         const questionPaper = [...selectedEasyQuestions, ...selectedMediumQuestions, ...selectedHardQuestions];
 
         return res.status(200).json({
             success: true,
-            "Total Questions" : "23 Questions(Total),  10-->easy, 10-->medium, 3-->hard",
-            "Total Marks" : "100 Marks",
-            "Easy" : "2 x 10 = 20 Marks",
-            "Medium" : "5 x 10 = 50 Marks",
-            "Hard" : "3 x 10 = 30 Marks",
+            "Total Marks": totalMarks,
+            "Easy Questions": easyQuestionsCount,
+            "Medium Questions": mediumQuestionsCount,
+            "Hard Questions": hardQuestionsCount,
+            "Marks per Easy Question": easyQuestionMarks,
+            "Marks per Medium Question": mediumQuestionMarks,
+            "Marks per Hard Question": hardQuestionMarks,
             questionPaper
         });
     } catch (error) {
@@ -144,6 +167,12 @@ exports.generateQuestionPaper = async(req, res) => {
 exports.getAllQuestions = async(req, res) => {
     try{
         const allQuestions = await Question.find({},{
+            subject: { $exists: true, $ne: null },
+            difficulty: { $exists: true, $ne: null },
+            question: { $exists: true, $ne: null },
+            topic: { $exists: true, $ne: null },
+            marks: { $exists: true, $ne: null }
+        }).select({
             subject : true,
             difficulty : true,
             question : true,
