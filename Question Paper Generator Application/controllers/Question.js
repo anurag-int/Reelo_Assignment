@@ -42,17 +42,11 @@ exports.createQuestion = async(req, res) => {
             // if question not present in database
             else
             {
-                // defining marks acc. to difficulty level.
-                let marks;
-                if(difficulty === "easy") marks = 2;
-                else if(difficulty === "medium") marks = 5;
-                else marks = 10;
-
+                
                 const question_data = await Question.create({
                     subject,
                     difficulty,
                     question,
-                    marks,
                     topic
                 })
 
@@ -171,13 +165,11 @@ exports.getAllQuestions = async(req, res) => {
             difficulty: { $exists: true, $ne: null },
             question: { $exists: true, $ne: null },
             topic: { $exists: true, $ne: null },
-            marks: { $exists: true, $ne: null }
         }).select({
             subject : true,
             difficulty : true,
             question : true,
             topic : true,
-            marks : true,
             _id : false,
         });
         let objLength = Object.keys(allQuestions).length;
