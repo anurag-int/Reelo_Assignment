@@ -34,7 +34,7 @@ These instructions will get you a copy of the project up and running on your loc
           "medium": 50,
           "hard": 30
       }`
-      - The response is a JSON object with the generated question paper.
+      - The response is a JSON object.
 
 2. `POST http://localhost:4000/api/v1/questions/add-question`, which will add question in your Question-Bank.
 
@@ -50,7 +50,9 @@ These instructions will get you a copy of the project up and running on your loc
         }`
       - The response is a JSON object with the generated question paper.
 
-  3. `GET http://localhost:4000/api/v1/question/questions-all`, this API will get you all the questions Available in the Question-Bank.
+  3. `GET http://localhost:4000/api/v1/question/questions-all`
+     - The response is a JSON object which will give all the question available.
+
     
 
 
