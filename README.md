@@ -21,7 +21,7 @@ These instructions will get you a copy of the project up and running on your loc
 3. Start the server with `nodemon server.js`
 
 ## API's
-
+      Use Postman for API Testing.
 1. `POST http://localhost:4000/api/v1/questions/generate-question-paper`, which generates a question paper. It accepts a JSON body with the following fields:
 
       - marks: The total marks for the question paper.
