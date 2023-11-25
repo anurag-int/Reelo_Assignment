@@ -54,7 +54,8 @@ These instructions will get you a copy of the project up and running on your loc
      - The response is a JSON object which will give all the question available.
 
     
-
+## Question_Paper_Generator —-> API docs. For Postman.
+- [Link](https://docs.google.com/document/d/1bArekBKxo-B1xIqgwqyGhM3YPN4C7tgSi-yzZYLGO5M/edit)
 
 ## Built With
 
